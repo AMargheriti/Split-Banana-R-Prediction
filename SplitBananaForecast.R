@@ -1,6 +1,6 @@
 library(forecast)
 setwd('C:/Users/Elias/Documents/ManSci Year 2/Data Analytics II/SplitBanana') # Set work directory to organise files
-# Load the Split Banana sales data. Create month as new factor variable. See http://www.statmethods.net/input/dates.html for working with dates in R.
+# Load the Split Banana sales data. Create month as new factor variable.
 sales.data <- read.csv('SplitBanana.csv', stringsAsFactors = FALSE)
 sales.data$Date <- as.Date(sales.data$Date, format = "%m/%d/%Y") # Sets all dates to the same format
 
@@ -53,9 +53,6 @@ ntotal
 # Create new data frame with the interaction matrix and the festival dummies
 x.df <- as.data.frame(cbind(interaction.mat, festival.dummies, seq(1, ntotal)))  # Put the festival seasonal dummies, the interaction matrix and a trend together into a data frame.
 
-# It gets tedious renaming all of the columns when using the interaction matrix, so we will leave them as they are
-#x <- x.df[ , -c(1)]  # This line is not necessary anymore because we have so many columns
-
 # Renaming x.df to x and removing two columns that are redundant because they are perfectly correlated
 x <- x.df[ , -c(1,85)]
 
@@ -102,7 +99,7 @@ plot(x = dates.train, y = ytrain, # This gives R the data to be plotted.
 lines(x = dates.valid, y = sales.lm.pred[ ,1], col = "blue")
 lines(x = dates.valid, y = yvalid, col = "black", lty = 2)
 
-# Once you have your final model, re-fit it to the entire training set and make forecasts in the testing set (April 1, 2014 through June 31, 2014).
+# re-fit model to the entire training set and make forecasts in the testing set (April 1, 2014 through June 31, 2014).
 
 # Create a testing set of the last three months
 xtest <- x[(ntotal-90):ntotal, ] # [, ] creates a matrix
@@ -116,10 +113,7 @@ accuracy(sales.lm.pred[, 1], yvalid)
 # "Un-log'ing", using lapply exp function to reverse the logarithm functiong to get the y-values back to sales numbers 
 fit.pred <- exp(sales.lm.pred)
 
-# We now have 3 different variables containing the upper, lower, and fit predictions
 
 # Write the mean predictions for daily sales in June 2014 to a csv file for use in the Staffing Model. You can open the csv file in Excel and copy and paste the forecasts into the Staffing Model.
 pred.vec <- fit.pred
 write.csv(pred.vec, file = "60ConfSplitBananaForecastLog.csv")
-#write.csv(col.upper.bound, file = "60ConfSplitBananaForecast(2(1816))LogUpper.csv")
-#write.csv(col.lower.bound, file = "60ConfSplitBananaForecast(2(1816))LogLower.csv")
